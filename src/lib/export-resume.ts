@@ -132,12 +132,12 @@ export async function downloadDocx(resume: Resume, filename: string) {
   const para = (value: string, opts: { bold?: boolean; size?: number } = {}) =>
     new Paragraph({
       children: [new TextRun({ text: value, bold: opts.bold ?? false, size: opts.size ?? 22 })],
-      spacing: { after: 80 },
+      spacing: { after: 160, line: 300, lineRule: "auto" },
     });
   const section = (value: string) =>
     new Paragraph({
       children: [new TextRun({ text: value.toUpperCase(), bold: true, size: 24 })],
-      spacing: { before: 240, after: 120 },
+      spacing: { before: 400, after: 200, line: 276, lineRule: "auto" },
     });
 
   children.push(
