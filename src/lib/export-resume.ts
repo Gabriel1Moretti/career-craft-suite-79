@@ -1,12 +1,21 @@
 import type { Resume } from "@/types/resume";
 
-const MARGIN = 48;
+const MARGIN = 56;
 const WIDTH = 595.28; // A4 pt
 const HEIGHT = 841.89;
+const CONTENT = WIDTH - MARGIN * 2;
 
 function contactLine(resume: Resume) {
   const p = resume.personal;
-  return [p.email, p.phone, p.location, p.linkedin, p.portfolio].filter(Boolean).join("  |  ");
+  return [p.email, p.phone, p.location, p.linkedin, p.portfolio].filter(Boolean).join("  •  ");
+}
+
+function bulletsOf(description?: string): string[] {
+  if (!description) return [];
+  return description
+    .split(/\r?\n/)
+    .map((l) => l.replace(/^\s*[-•*\u2022]\s*/, "").trim())
+    .filter(Boolean);
 }
 
 export interface ResumeStats {
@@ -25,100 +34,181 @@ export async function downloadPdf(resume: Resume, filename: string) {
   const doc = new jsPDF({ unit: "pt", format: "a4" });
   let y = MARGIN;
 
-  const ensureSpace = (needed = 16) => {
+  const INK = 26;
+  const GRAY = 105;
+  const RULE = 190;
+
+  const ensureSpace = (needed: number) => {
     if (y + needed > HEIGHT - MARGIN) {
       doc.addPage();
       y = MARGIN;
     }
   };
 
-  const text = (
-    value: string,
-    { size = 10.5, bold = false, gap = 17 }: { size?: number; bold?: boolean; gap?: number } = {},
-  ) => {
-    doc.setFont("helvetica", bold ? "bold" : "normal");
+  interface TextOpts {
+    size?: number;
+    bold?: boolean;
+    italic?: boolean;
+    gap?: number;
+    color?: number;
+    x?: number;
+    width?: number;
+    charSpace?: number;
+  }
+
+  const text = (value: string, opts: TextOpts = {}) => {
+    const {
+      size = 10.5,
+      bold = false,
+      italic = false,
+      gap = size * 1.62,
+      color = INK,
+      x = MARGIN,
+      width = CONTENT,
+      charSpace = 0,
+    } = opts;
+    doc.setFont("helvetica", bold ? (italic ? "bolditalic" : "bold") : italic ? "italic" : "normal");
     doc.setFontSize(size);
-    const lines = doc.splitTextToSize(value, WIDTH - MARGIN * 2) as string[];
+    doc.setTextColor(color);
+    const lines = doc.splitTextToSize(value, width) as string[];
     lines.forEach((line) => {
       ensureSpace(gap);
-      doc.text(line, MARGIN, y);
+      doc.text(line, x, y, { charSpace });
       y += gap;
     });
   };
 
   const heading = (value: string) => {
     if (!value) return;
-    y += 18;
-    ensureSpace(28);
-    text(value.toUpperCase(), { size: 11.5, bold: true, gap: 8 });
-    doc.setDrawColor(170);
-    doc.line(MARGIN, y + 3, WIDTH - MARGIN, y + 3);
     y += 16;
+    ensureSpace(34);
+    text(value.toUpperCase(), { size: 9.5, bold: true, gap: 6, charSpace: 1.1, color: INK });
+    doc.setDrawColor(RULE);
+    doc.setLineWidth(0.7);
+    doc.line(MARGIN, y + 4, WIDTH - MARGIN, y + 4);
+    y += 18;
   };
 
-  text(resume.personal.name || "Currículo", { size: 19, bold: true, gap: 26 });
-  if (resume.personal.title) text(resume.personal.title, { size: 11.5, gap: 18 });
+  // Entry title with right-aligned period on the same baseline.
+  const entryTitle = (title: string, right?: string) => {
+    const size = 11;
+    const gap = 16;
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(size);
+    doc.setTextColor(INK);
+    const rightWidth = right
+      ? (doc.getStringUnitWidth(right) * 9.5) / doc.internal.scaleFactor + 12
+      : 0;
+    const lines = doc.splitTextToSize(title, CONTENT - rightWidth) as string[];
+    lines.forEach((line, i) => {
+      ensureSpace(gap);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(size);
+      doc.setTextColor(INK);
+      doc.text(line, MARGIN, y);
+      if (i === 0 && right) {
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(9.5);
+        doc.setTextColor(GRAY);
+        doc.text(right, WIDTH - MARGIN, y, { align: "right" });
+      }
+      y += gap;
+    });
+  };
+
+  const bullet = (value: string) => {
+    const size = 10.5;
+    const gap = 16.5;
+    const indent = 14;
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(size);
+    doc.setTextColor(INK);
+    const lines = doc.splitTextToSize(value, CONTENT - indent) as string[];
+    lines.forEach((line, i) => {
+      ensureSpace(gap);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(size);
+      doc.setTextColor(INK);
+      if (i === 0) doc.text("•", MARGIN + 2, y);
+      doc.text(line, MARGIN + indent, y);
+      y += gap;
+    });
+  };
+
+  // ---------- Header ----------
+  text(resume.personal.name || "Currículo", { size: 21, bold: true, gap: 26, charSpace: 0.4 });
+  if (resume.personal.title)
+    text(resume.personal.title, { size: 11.5, gap: 18, color: GRAY });
   const contact = contactLine(resume);
-  if (contact) text(contact, { size: 9.5, gap: 15 });
+  if (contact) text(contact, { size: 9.5, gap: 14, color: GRAY });
+  y += 6;
+  doc.setDrawColor(RULE);
+  doc.setLineWidth(1);
+  doc.line(MARGIN, y, WIDTH - MARGIN, y);
+  y += 4;
 
   if (resume.summary) {
     heading("Resumo profissional");
-    text(resume.summary);
+    text(resume.summary, { gap: 16.5 });
   }
 
   if (resume.experiences.length) {
     heading("Experiência profissional");
     resume.experiences.forEach((e, i) => {
-      if (i > 0) y += 10;
-      text(`${e.role}${e.company ? ` — ${e.company}` : ""}`, { bold: true, gap: 16 });
-      const meta = [e.location, e.period].filter(Boolean).join(" | ");
-      if (meta) text(meta, { size: 9.5, gap: 15 });
-      if (e.description) text(e.description, { gap: 16 });
+      if (i > 0) y += 12;
+      entryTitle(e.role || "", e.period);
+      const meta = [e.company, e.location].filter(Boolean).join("  •  ");
+      if (meta) text(meta, { size: 10, italic: true, gap: 16, color: GRAY });
+      y += 2;
+      bulletsOf(e.description).forEach(bullet);
     });
   }
 
   if (resume.education.length) {
     heading("Formação acadêmica");
     resume.education.forEach((e, i) => {
-      if (i > 0) y += 10;
-      text(`${e.degree}${e.institution ? ` — ${e.institution}` : ""}`, { bold: true, gap: 16 });
-      if (e.period) text(e.period, { size: 9.5, gap: 15 });
-      if (e.description) text(e.description, { gap: 16 });
+      if (i > 0) y += 12;
+      entryTitle(e.degree || "", e.period);
+      if (e.institution) text(e.institution, { size: 10, italic: true, gap: 16, color: GRAY });
+      if (e.description) {
+        y += 2;
+        text(e.description, { gap: 16.5 });
+      }
     });
   }
 
   if (resume.skills.length) {
     heading("Habilidades");
-    text(resume.skills.join(", "));
+    text(resume.skills.join("  •  "), { gap: 16.5 });
   }
 
   if (resume.languages.length) {
     heading("Idiomas");
-    text(resume.languages.map((l) => `${l.name}${l.level ? ` — ${l.level}` : ""}`).join(", "));
+    text(
+      resume.languages.map((l) => `${l.name}${l.level ? ` — ${l.level}` : ""}`).join("  •  "),
+      { gap: 16.5 },
+    );
   }
 
   if (resume.certifications.length) {
     heading("Certificações");
     resume.certifications.forEach((c) =>
-      text(
-        `${c.name}${c.issuer ? ` — ${c.issuer}` : ""}${c.year ? ` (${c.year})` : ""}`,
-        { gap: 16 },
-      ),
+      bullet(`${c.name}${c.issuer ? ` — ${c.issuer}` : ""}${c.year ? ` (${c.year})` : ""}`),
     );
   }
 
   if (resume.courses.length) {
     heading("Cursos");
-    text(resume.courses.join(", "));
+    resume.courses.forEach((c) => bullet(c));
   }
 
   if (resume.projects.length) {
     heading("Projetos");
     resume.projects.forEach((p, i) => {
-      if (i > 0) y += 10;
-      text(p.name, { bold: true, gap: 16 });
-      if (p.description) text(p.description, { gap: 16 });
-      if (p.link) text(p.link, { size: 9.5, gap: 15 });
+      if (i > 0) y += 12;
+      entryTitle(p.name || "");
+      if (p.description) text(p.description, { gap: 16.5 });
+      if (p.link) text(p.link, { size: 9.5, gap: 15, color: GRAY });
     });
   }
 
@@ -126,82 +216,166 @@ export async function downloadPdf(resume: Resume, filename: string) {
 }
 
 export async function downloadDocx(resume: Resume, filename: string) {
-  const { Document, Packer, Paragraph, TextRun, AlignmentType } = await import("docx");
+  const {
+    Document,
+    Packer,
+    Paragraph,
+    TextRun,
+    BorderStyle,
+    LevelFormat,
+    AlignmentType,
+    TabStopType,
+    TabStopPosition,
+  } = await import("docx");
 
+  const INK = "1A1A1A";
+  const GRAY = "5F5F5F";
+  const RULE = "BFBFBF";
   const children: InstanceType<typeof Paragraph>[] = [];
-  const para = (value: string, opts: { bold?: boolean; size?: number } = {}) =>
+
+  const para = (
+    value: string,
+    opts: { bold?: boolean; size?: number; color?: string; italics?: boolean; after?: number } = {},
+  ) =>
     new Paragraph({
-      children: [new TextRun({ text: value, bold: opts.bold ?? false, size: opts.size ?? 22 })],
-      spacing: { after: 160, line: 300, lineRule: "auto" },
+      children: [
+        new TextRun({
+          text: value,
+          bold: opts.bold ?? false,
+          italics: opts.italics ?? false,
+          size: opts.size ?? 21,
+          color: opts.color ?? INK,
+        }),
+      ],
+      spacing: { after: opts.after ?? 140, line: 300, lineRule: "auto" },
     });
+
+  const bulletPara = (value: string) =>
+    new Paragraph({
+      numbering: { reference: "resume-bullets", level: 0 },
+      children: [new TextRun({ text: value, size: 21, color: INK })],
+      spacing: { after: 90, line: 290, lineRule: "auto" },
+    });
+
   const section = (value: string) =>
     new Paragraph({
-      children: [new TextRun({ text: value.toUpperCase(), bold: true, size: 24 })],
-      spacing: { before: 400, after: 200, line: 276, lineRule: "auto" },
+      children: [new TextRun({ text: value.toUpperCase(), bold: true, size: 20, color: INK })],
+      spacing: { before: 340, after: 160, line: 276, lineRule: "auto" },
+      border: { bottom: { style: BorderStyle.SINGLE, size: 6, color: RULE, space: 6 } },
     });
 
+  const entry = (title: string, right?: string) =>
+    new Paragraph({
+      children: [
+        new TextRun({ text: title, bold: true, size: 23, color: INK }),
+        ...(right
+          ? [new TextRun({ text: `\t${right}`, size: 19, color: GRAY })]
+          : []),
+      ],
+      tabStops: [{ type: TabStopType.RIGHT, position: TabStopPosition.MAX }],
+      spacing: { before: 160, after: 40, line: 290, lineRule: "auto" },
+    });
+
+  // Header
   children.push(
     new Paragraph({
-      children: [new TextRun({ text: resume.personal.name || "Currículo", bold: true, size: 36 })],
+      children: [
+        new TextRun({ text: resume.personal.name || "Currículo", bold: true, size: 40, color: INK }),
+      ],
       alignment: AlignmentType.LEFT,
+      spacing: { after: 60, line: 300, lineRule: "auto" },
     }),
   );
-  if (resume.personal.title) children.push(para(resume.personal.title));
+  if (resume.personal.title)
+    children.push(para(resume.personal.title, { size: 23, color: GRAY, after: 60 }));
   const contact = contactLine(resume);
-  if (contact) children.push(para(contact, { size: 20 }));
+  if (contact)
+    children.push(
+      new Paragraph({
+        children: [new TextRun({ text: contact, size: 19, color: GRAY })],
+        spacing: { after: 120, line: 290, lineRule: "auto" },
+        border: { bottom: { style: BorderStyle.SINGLE, size: 8, color: RULE, space: 8 } },
+      }),
+    );
 
-  if (resume.summary) {
-    children.push(section("Resumo profissional"), para(resume.summary));
-  }
+  if (resume.summary) children.push(section("Resumo profissional"), para(resume.summary));
+
   if (resume.experiences.length) {
     children.push(section("Experiência profissional"));
     resume.experiences.forEach((e) => {
-      children.push(para(`${e.role}${e.company ? ` — ${e.company}` : ""}`, { bold: true }));
-      const meta = [e.location, e.period].filter(Boolean).join(" | ");
-      if (meta) children.push(para(meta, { size: 20 }));
-      if (e.description) children.push(para(e.description));
+      children.push(entry(e.role || "", e.period));
+      const meta = [e.company, e.location].filter(Boolean).join("  •  ");
+      if (meta) children.push(para(meta, { size: 20, color: GRAY, italics: true, after: 80 }));
+      bulletsOf(e.description).forEach((b) => children.push(bulletPara(b)));
     });
   }
+
   if (resume.education.length) {
     children.push(section("Formação acadêmica"));
     resume.education.forEach((e) => {
-      children.push(para(`${e.degree}${e.institution ? ` — ${e.institution}` : ""}`, { bold: true }));
-      if (e.period) children.push(para(e.period, { size: 20 }));
+      children.push(entry(e.degree || "", e.period));
+      if (e.institution)
+        children.push(para(e.institution, { size: 20, color: GRAY, italics: true, after: 80 }));
       if (e.description) children.push(para(e.description));
     });
   }
-  if (resume.skills.length) children.push(section("Habilidades"), para(resume.skills.join(", ")));
+
+  if (resume.skills.length)
+    children.push(section("Habilidades"), para(resume.skills.join("  •  ")));
+
   if (resume.languages.length)
     children.push(
       section("Idiomas"),
-      para(resume.languages.map((l) => `${l.name}${l.level ? ` — ${l.level}` : ""}`).join(", ")),
+      para(resume.languages.map((l) => `${l.name}${l.level ? ` — ${l.level}` : ""}`).join("  •  ")),
     );
+
   if (resume.certifications.length) {
     children.push(section("Certificações"));
     resume.certifications.forEach((c) =>
       children.push(
-        para(`${c.name}${c.issuer ? ` — ${c.issuer}` : ""}${c.year ? ` (${c.year})` : ""}`),
+        bulletPara(`${c.name}${c.issuer ? ` — ${c.issuer}` : ""}${c.year ? ` (${c.year})` : ""}`),
       ),
     );
   }
-  if (resume.courses.length) children.push(section("Cursos"), para(resume.courses.join(", ")));
+
+  if (resume.courses.length) {
+    children.push(section("Cursos"));
+    resume.courses.forEach((c) => children.push(bulletPara(c)));
+  }
+
   if (resume.projects.length) {
     children.push(section("Projetos"));
     resume.projects.forEach((p) => {
-      children.push(para(p.name, { bold: true }));
+      children.push(entry(p.name || ""));
       if (p.description) children.push(para(p.description));
-      if (p.link) children.push(para(p.link, { size: 20 }));
+      if (p.link) children.push(para(p.link, { size: 19, color: GRAY }));
     });
   }
 
   const doc = new Document({
-    styles: { default: { document: { run: { font: "Arial", size: 22 } } } },
+    styles: { default: { document: { run: { font: "Calibri", size: 21 } } } },
+    numbering: {
+      config: [
+        {
+          reference: "resume-bullets",
+          levels: [
+            {
+              level: 0,
+              format: LevelFormat.BULLET,
+              text: "•",
+              alignment: AlignmentType.LEFT,
+              style: { paragraph: { indent: { left: 360, hanging: 220 } } },
+            },
+          ],
+        },
+      ],
+    },
     sections: [
       {
         properties: {
           page: {
             size: { width: 11906, height: 16838 },
-            margin: { top: 1000, right: 1000, bottom: 1000, left: 1000 },
+            margin: { top: 1100, right: 1100, bottom: 1100, left: 1100 },
           },
         },
         children,
