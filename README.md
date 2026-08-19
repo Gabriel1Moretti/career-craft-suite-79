@@ -1,687 +1,318 @@
-# Career Match Pro
+# JobMatch ATS
 
-Prompt para Lovable — Plataforma de Matchmaking de Vagas e Currículos ATS
+Uma plataforma web inteligente para **comparar currículos com vagas de emprego**, identificar o nível de compatibilidade e **gerar currículos personalizados e otimizados para sistemas ATS**.
 
-Crie um aplicativo web completo, moderno, responsivo e funcional do zero, focado em matchmaking entre candidatos e vagas de emprego, além da criação automática de versões do currículo otimizadas para ATS (Applicant Tracking Systems).
+O projeto foi pensado para proporcionar uma experiência simples: o usuário entra, adiciona seu currículo, informa uma vaga e recebe uma análise completa, recomendações e uma nova versão do currículo pronta para candidatura.
 
-O projeto deve ser desenvolvido integralmente no Lovable, utilizando ShadCN UI como design system.
+---
 
-1. Objetivo principal
+## 🚀 Sobre o projeto
 
-A plataforma deve permitir que qualquer usuário entre no site e utilize a aplicação imediatamente, sem necessidade de cadastro, login, senha ou autenticação.
+O **JobMatch ATS** combina análise de vagas, avaliação de compatibilidade e otimização de currículos em uma única plataforma.
 
-O objetivo é permitir que o usuário:
+A aplicação permite:
 
-Cadastre ou envie seu currículo.
+* 📄 Enviar ou criar um currículo.
+* 💼 Inserir uma vaga de emprego.
+* 🎯 Calcular o nível de compatibilidade entre candidato e vaga.
+* 🔎 Identificar palavras-chave importantes.
+* 📊 Analisar pontos fortes e lacunas do perfil.
+* 🤖 Gerar uma versão personalizada do currículo.
+* ✅ Otimizar o currículo para ATS.
+* ✏️ Editar o currículo gerado.
+* 👀 Visualizar o currículo antes do download.
+* 📥 Baixar o currículo em PDF ou DOCX.
+* 🕐 Manter histórico das análises durante a sessão.
 
-Informe ou cole uma vaga de emprego.
+O sistema **não possui login ou cadastro**. O usuário pode utilizar a aplicação imediatamente.
 
-Analise o nível de compatibilidade entre seu perfil e a vaga.
+---
 
-Identifique pontos fortes, pontos fracos e lacunas do currículo.
+# 🎯 Objetivo
 
-Gere uma nova versão do currículo personalizada para aquela vaga.
+O objetivo do projeto é ajudar candidatos a aumentarem a qualidade de suas candidaturas, adaptando o currículo às necessidades específicas de cada vaga.
 
-Gere um currículo otimizado para sistemas ATS.
+Em vez de utilizar o mesmo currículo para todas as oportunidades, o usuário pode analisar cada vaga e gerar uma versão específica, mantendo apenas informações verdadeiras do seu histórico profissional.
 
-Visualize o currículo antes de baixar.
+> **Importante:** o sistema não deve inventar experiências, tecnologias, empresas, certificações, cargos ou resultados que não tenham sido fornecidos pelo usuário.
 
-Baixe o currículo final em formato ATS friendly.
+---
 
-A experiência deve ser extremamente simples, intuitiva e profissional.
+# ✨ Principais funcionalidades
 
-2. Identidade visual
+## Match com vagas
 
-Utilize ShadCN UI como base de todos os componentes.
+A plataforma compara o currículo do usuário com a descrição da vaga e gera um **Match Score**.
 
-Paleta de cores
+A análise considera fatores como:
 
-A interface deve utilizar predominantemente:
-
-Verde claro como cor principal.
-
-Branco como cor de fundo predominante.
-
-Tons neutros suaves para textos, bordas e elementos secundários.
-
-Verde mais escuro apenas para contraste, estados de sucesso e textos importantes.
-
-Sugestão visual:
-
-Primary: verde claro.
-
-Background: branco.
-
-Cards: branco.
-
-Borders: cinza muito claro.
-
-Text: cinza escuro.
-
-Success: verde.
-
-Warning: amarelo suave.
-
-Error: vermelho suave.
-
-A interface deve transmitir:
-
-tecnologia + carreira + confiança + simplicidade + profissionalismo.
-
-Evite aparência excessivamente corporativa ou pesada.
-
-3. Estrutura da aplicação
-
-Crie uma aplicação com navegação simples e poucas páginas.
-
-Página principal
-
-A página inicial deve funcionar como um dashboard central.
-
-Estrutura:
-
-Header
-
-Criar um header minimalista com:
-
-Logo/nome da plataforma.
-
-Navegação:
-
-Início
-
-Meu currículo
-
-Match com vagas
-
-Currículos gerados
-
-Não criar botão de login ou cadastro.
-
-Adicionar apenas um botão principal como:
-
-"Analisar uma vaga"
-
-4. Hero Section
-
-Na página inicial, criar uma seção de destaque explicando claramente o produto.
-
-Título sugerido:
-
-"Encontre vagas que combinam com você e adapte seu currículo para cada oportunidade."
-
-Subtítulo:
-
-"Compare seu currículo com uma vaga, descubra seu nível de compatibilidade e gere uma versão otimizada para ATS em poucos minutos."
-
-Adicionar CTA:
-
-"Começar agora"
-
-Ao clicar, levar o usuário diretamente para o fluxo de análise.
-
-5. Fluxo principal
-
-O fluxo principal da aplicação deve funcionar como um processo guiado.
-
-Criar um stepper visual:
-
-1. Meu currículo → 2. Vaga → 3. Match → 4. Currículo ATS → 5. Download
-
-Cada etapa deve mostrar claramente o progresso.
-
-6. Etapa 1 — Meu currículo
-
-Criar uma área onde o usuário possa fornecer seu currículo.
-
-Permitir duas opções:
-
-Upload
-
-Aceitar:
-
-PDF
-
-DOCX
-
-Criar área de drag & drop.
-
-Texto:
-
-"Arraste seu currículo aqui ou clique para selecionar um arquivo."
-
-Inserção manual
-
-Adicionar opção:
-
-"Criar currículo manualmente"
-
-Quando selecionada, abrir formulário dividido em seções:
-
-Informações pessoais
-
-Resumo profissional
-
-Experiência profissional
-
-Formação acadêmica
-
-Habilidades
-
-Idiomas
-
-Certificações
-
-Cursos
-
-Projetos
-
-Links profissionais
-
-Permitir adicionar e remover experiências.
-
-7. Etapa 2 — Inserção da vaga
-
-Criar uma interface para inserir a oportunidade desejada.
-
-Permitir:
-
-Colar descrição da vaga
-
-Textarea grande com placeholder:
-
-"Cole aqui a descrição completa da vaga..."
-
-Informações adicionais
-
-Campos opcionais:
-
-Empresa
-
-Cargo
-
-Localização
-
-Senioridade
-
-Modelo de trabalho
-
-Adicionar botão:
-
-"Analisar vaga"
-
-8. Etapa 3 — Match entre currículo e vaga
-
-Após analisar os dados, criar uma página visual de matchmaking.
-
-Mostrar um score principal de compatibilidade.
+* Habilidades técnicas.
+* Experiência profissional.
+* Formação acadêmica.
+* Senioridade.
+* Palavras-chave.
+* Idiomas.
+* Certificações.
 
 Exemplo:
 
-82%
+```text
+Match Score
+89%
 
-Compatibilidade com a vaga
+Habilidades técnicas     94%
+Experiência              91%
+Palavras-chave           86%
+Senioridade              95%
+Formação                 82%
+```
 
-Criar um gráfico circular ou progress indicator utilizando ShadCN.
+---
 
-Dividir a análise em categorias:
+## 🔑 Análise de palavras-chave
 
-Habilidades técnicas
+A plataforma identifica termos importantes da vaga e verifica sua presença no currículo.
 
-Experiência profissional
+As palavras-chave são classificadas como:
 
-Formação
-
-Senioridade
-
-Palavras-chave
-
-Idiomas
-
-Certificações
-
-Cada categoria deve possuir:
-
-Score
-
-Status
-
-Explicação
+* Encontradas.
+* Ausentes.
+* Correspondência parcial.
 
 Exemplo:
 
-Habilidades técnicas — 91%
-
-"Seu currículo possui a maioria das tecnologias mencionadas na vaga."
-
-9. Palavras-chave da vaga
-
-Criar uma seção mostrando as principais palavras-chave detectadas.
-
-Separar em:
-
-Encontradas no currículo
-
-Exemplo:
-
+```text
+Encontradas
 React
-
+TypeScript
 JavaScript
 
-TypeScript
-
-Git
-
-APIs
-
 Ausentes
-
-Exemplo:
-
-Next.js
-
 Docker
-
 AWS
 
 Correspondência parcial
-
-Exemplo:
-
 Node.js
-
 CI/CD
+```
 
-Utilizar badges do ShadCN.
+---
 
-10. Análise do currículo
+## 🤖 Geração de currículo personalizado
 
-Criar uma seção chamada:
+Com base na vaga analisada, o sistema pode gerar uma nova versão do currículo.
 
-"O que pode melhorar no seu currículo"
+A IA pode:
 
-Mostrar recomendações como:
+* Reescrever o resumo profissional.
+* Priorizar experiências relevantes.
+* Destacar habilidades relacionadas à vaga.
+* Reorganizar informações.
+* Melhorar descrições profissionais.
+* Incorporar palavras-chave relevantes.
+* Tornar o conteúdo mais objetivo.
 
-Adicionar palavras-chave específicas.
+Sempre preservando a veracidade das informações fornecidas pelo candidato.
 
-Melhorar descrição das experiências.
+---
 
-Quantificar resultados.
+## ✅ Otimização ATS
 
-Remover informações pouco relevantes.
+O currículo gerado passa por uma análise específica para sistemas ATS.
 
-Melhorar resumo profissional.
+A plataforma verifica aspectos como:
 
-Ajustar título profissional.
-
-Cada recomendação deve apresentar:
-
-Problema identificado.
-
-Por que isso importa.
-
-Sugestão de melhoria.
-
-11. Geração de currículo personalizado
-
-Criar um botão principal:
-
-"Criar currículo para esta vaga"
-
-Ao clicar, gerar automaticamente uma nova versão do currículo baseada na vaga.
-
-O sistema deve:
-
-Adaptar o resumo profissional.
-
-Priorizar experiências relevantes.
-
-Destacar habilidades relacionadas à vaga.
-
-Reorganizar informações.
-
-Incorporar palavras-chave relevantes.
-
-Melhorar descrições das experiências.
-
-Utilizar linguagem profissional.
-
-Evitar inventar informações que não estejam presentes no currículo original.
-
-IMPORTANTE:
-
-Nunca inventar:
-
-Experiências.
-
-Empresas.
-
-Tecnologias.
-
-Certificações.
-
-Resultados.
-
-Formação acadêmica.
-
-Cargos.
-
-A IA deve apenas reorganizar, melhorar e adaptar informações verdadeiras fornecidas pelo usuário.
-
-12. Otimização ATS
-
-Criar uma área específica chamada:
-
-"Otimização ATS"
-
-Mostrar um checklist de boas práticas.
+* Estrutura do documento.
+* Hierarquia das informações.
+* Palavras-chave.
+* Clareza das seções.
+* Formatação.
+* Legibilidade.
+* Uso de elementos potencialmente incompatíveis com ATS.
 
 Exemplo:
 
-✓ Estrutura simples
-✓ Títulos de seção padronizados
+```text
+ATS Score
+96/100
+
+✓ Estrutura compatível
 ✓ Palavras-chave relevantes
-✓ Formatação compatível com ATS
-✓ Sem tabelas complexas
-✓ Sem elementos gráficos desnecessários
-✓ Sem caixas de texto complexas
-✓ Sem informações importantes dentro de imagens
+✓ Seções padronizadas
+✓ Formatação simples
+✓ Boa legibilidade
+```
 
-Mostrar também um:
+---
 
-ATS Score
+## ✏️ Editor de currículo
 
-Exemplo:
+O usuário pode editar o currículo gerado antes de realizar o download.
 
-94/100
+O editor permite alterar:
 
-Adicionar explicação do score e sugestões para melhorar.
+* Informações pessoais.
+* Título profissional.
+* Resumo.
+* Experiência profissional.
+* Formação.
+* Habilidades.
+* Idiomas.
+* Certificações.
+* Projetos.
 
-13. Editor do currículo
+O preview do currículo é atualizado em tempo real.
 
-Criar uma interface de edição do currículo gerado.
+---
 
-Layout:
+## 📥 Download
 
-Esquerda
+O currículo final pode ser exportado em:
 
-Editor/formulário das informações.
+* PDF ATS Friendly.
+* DOCX.
 
-Direita
+O documento utiliza uma estrutura simples e profissional, evitando elementos que possam prejudicar sua leitura por sistemas de recrutamento.
 
-Preview do currículo em tempo real.
+---
 
-O usuário deve poder editar:
+# 🎨 Design System
 
-Nome
+O projeto utiliza **ShadCN UI** como design system.
 
-Cargo
+A interface foi projetada para ser:
 
-Contato
+* Moderna.
+* Minimalista.
+* Profissional.
+* Responsiva.
+* Acessível.
+* Fácil de utilizar.
 
-Resumo
+### Paleta
 
-Experiência
+A identidade visual utiliza principalmente:
 
-Formação
+* 🟢 Verde claro.
+* ⚪ Branco.
+* Cinza neutro para textos e elementos secundários.
+* Verde escuro para contrastes e estados de sucesso.
 
-Habilidades
+A interface deve transmitir:
 
-Idiomas
+**Tecnologia + Carreira + Confiança + Simplicidade**
 
-Certificações
+---
 
-Projetos
+# 🧭 Fluxo da aplicação
 
-Alterações realizadas devem aparecer imediatamente no preview.
+O fluxo principal do usuário é:
 
-14. Design do currículo ATS
+```text
+Entrar no site
+      ↓
+Adicionar currículo
+      ↓
+Adicionar vaga
+      ↓
+Analisar compatibilidade
+      ↓
+Visualizar Match Score
+      ↓
+Ver palavras-chave e recomendações
+      ↓
+Gerar currículo personalizado
+      ↓
+Otimizar para ATS
+      ↓
+Editar currículo
+      ↓
+Visualizar preview
+      ↓
+Baixar PDF / DOCX
+```
 
-Criar templates extremamente simples e profissionais.
+---
 
-O template principal deve possuir:
+# 🖥️ Estrutura da aplicação
 
-Fundo branco.
+A aplicação possui as principais áreas:
 
-Tipografia profissional.
+```text
+Home
+│
+├── Meu currículo
+│
+├── Match com vagas
+│
+├── Currículo ATS
+│
+└── Histórico
+```
 
-Hierarquia clara.
+### Home
 
-Títulos simples.
+Página inicial e principal ponto de entrada da aplicação.
 
-Espaçamento consistente.
+### Meu currículo
 
-Sem gráficos.
+Área para upload ou criação manual do currículo.
 
-Sem barras de habilidades.
+### Match com vagas
 
-Sem ícones excessivos.
+Área para inserir uma vaga e visualizar a análise de compatibilidade.
 
-Sem fotografias.
+### Currículo ATS
 
-Sem elementos decorativos que possam prejudicar ATS.
+Editor e visualização do currículo personalizado.
 
-O objetivo é garantir máxima legibilidade tanto para recrutadores quanto para sistemas ATS.
+### Histórico
 
-15. Download do currículo
+Lista de análises e currículos gerados durante a utilização.
 
-Criar uma seção específica:
+---
 
-"Baixar currículo ATS"
+# 🛠️ Tecnologias
 
-Mostrar um card com:
+O projeto foi pensado para ser desenvolvido utilizando:
 
-Seu currículo está pronto.
+* **Lovable**
+* **React**
+* **TypeScript**
+* **ShadCN UI**
+* **Tailwind CSS**
+* **Vite**
+* **Lucide Icons**
+* **Local Storage**
 
-Mostrar:
+A arquitetura deve permanecer preparada para integração com serviços externos de IA.
 
-ATS Score
+---
 
-Número de páginas
+# 🤖 Integração com IA
 
-Quantidade de palavras-chave encontradas
+A camada de inteligência artificial deve ser isolada da interface para facilitar futuras alterações de fornecedor ou modelo.
 
-Compatibilidade com a vaga
+Estrutura conceitual:
 
-Adicionar botão principal:
+```text
+Frontend
+   ↓
+AI Service
+   ↓
+LLM / API de IA
+   ↓
+Structured Response
+   ↓
+Match + Recommendations + Resume
+```
 
-"Baixar currículo ATS em PDF"
+Um retorno esperado pode seguir esta estrutura:
 
-Adicionar também:
-
-"Baixar currículo em DOCX"
-
-O PDF deve possuir estrutura limpa, profissional e adequada para ATS.
-
-16. Currículos gerados
-
-Criar uma área chamada:
-
-"Meus currículos"
-
-Como não existe login, os currículos podem ser mantidos durante a sessão atual no navegador/local storage.
-
-Mostrar cards contendo:
-
-Nome do cargo.
-
-Empresa.
-
-Data de criação.
-
-Match Score.
-
-ATS Score.
-
-Botão "Abrir".
-
-Botão "Baixar".
-
-Botão "Excluir".
-
-Exemplo:
-
-Frontend Developer — Empresa XYZ
-
-Match: 89%
-
-ATS: 96%
-
-17. Histórico de análises
-
-Criar uma seção:
-
-"Histórico"
-
-Mostrar análises realizadas anteriormente durante a utilização da aplicação.
-
-Cada item deve mostrar:
-
-Cargo.
-
-Empresa.
-
-Match Score.
-
-ATS Score.
-
-Data.
-
-Ação para visualizar novamente.
-
-Persistir os dados no navegador utilizando localStorage enquanto não houver backend/autenticação.
-
-18. UX/UI
-
-A aplicação deve possuir UX extremamente simples.
-
-Prioridades:
-
-Clareza.
-
-Rapidez.
-
-Facilidade de uso.
-
-Aparência profissional.
-
-Feedback visual.
-
-Utilizar componentes ShadCN como:
-
-Button
-
-Card
-
-Input
-
-Textarea
-
-Badge
-
-Progress
-
-Tabs
-
-Dialog
-
-Dropdown Menu
-
-Accordion
-
-Tooltip
-
-Alert
-
-Separator
-
-Scroll Area
-
-Sheet
-
-Select
-
-Criar estados:
-
-Loading
-
-Success
-
-Empty
-
-Error
-
-Adicionar skeleton loaders durante processamento de IA.
-
-19. Responsividade
-
-A aplicação deve funcionar perfeitamente em:
-
-Desktop
-
-Tablet
-
-Mobile
-
-No mobile, o editor do currículo deve mudar para um layout vertical:
-
-Editor → Preview
-
-O header deve possuir menu mobile.
-
-20. Arquitetura
-
-Criar código organizado e escalável.
-
-Separar componentes por responsabilidade.
-
-Estrutura sugerida:
-
-src/
-  components/
-    layout/
-    resume/
-    jobs/
-    matchmaking/
-    ats/
-    ui/
-
-  pages/
-    Home
-    Resume
-    JobMatch
-    ATSResume
-    History
-
-  hooks/
-  services/
-  utils/
-  types/
-
-
-Utilizar TypeScript.
-
-Manter componentes reutilizáveis.
-
-21. Inteligência artificial
-
-Estruturar o projeto para utilização de IA na análise.
-
-A IA deverá receber:
-
-Currículo
-
-Dados estruturados do candidato.
-
-Vaga
-
-Descrição da vaga.
-
-E retornar dados estruturados contendo:
-
+```json
 {
-  "matchScore": 0,
-  "atsScore": 0,
+  "matchScore": 89,
+  "atsScore": 96,
   "skillsMatch": [],
   "missingSkills": [],
   "partialSkills": [],
@@ -691,151 +322,133 @@ E retornar dados estruturados contendo:
   "keywords": [],
   "optimizedResume": {}
 }
-
-
-O sistema deve estar preparado para integrar posteriormente com uma API de IA.
-
-Não deixar a lógica de IA espalhada pela interface.
-
-Criar uma camada de serviço específica para isso.
-
-22. Segurança e privacidade
-
-Como não existe login, deixar claro para o usuário que os dados são utilizados apenas para a finalidade de gerar e analisar o currículo.
-
-Não armazenar informações desnecessárias.
-
-Não criar sistema de autenticação.
-
-Não criar página de login.
-
-Não criar cadastro.
-
-Não exigir e-mail para utilizar o produto.
-
-23. Landing page
-
-A homepage deve também funcionar como uma landing page moderna.
-
-Criar as seguintes seções:
-
-Hero
-
-Explicar o produto.
-
-Como funciona
-
-Mostrar 3 passos:
-
-1. Envie seu currículo
-
-2. Adicione a vaga
-
-3. Gere seu currículo otimizado
-
-Benefícios
-
-Cards:
-
-Match inteligente com vagas.
-
-Currículos personalizados.
-
-Otimização ATS.
-
-Análise de palavras-chave.
-
-Download rápido.
-
-Sem necessidade de cadastro.
-
-CTA final
-
-Título:
-
-"Prepare seu currículo para a próxima oportunidade."
-
-Botão:
-
-"Começar agora"
-
-24. Regras importantes de produto
-
-Não implementar autenticação.
-
-Não criar onboarding obrigatório.
-
-Não exigir cadastro.
-
-O usuário deve conseguir chegar ao produto principal imediatamente.
-
-Não utilizar designs complexos.
-
-Não utilizar gradientes exagerados.
-
-Não utilizar excesso de animações.
-
-Priorizar acessibilidade.
-
-Utilizar componentes semânticos.
-
-Garantir bom contraste.
-
-Utilizar estados de foco e hover.
-
-25. Resultado esperado
-
-Entregar uma aplicação completa, funcional e visualmente refinada, com aparência de um produto SaaS profissional.
-
-O fluxo principal deve ser:
-
-Entrar no site → adicionar currículo → adicionar vaga → analisar match → visualizar recomendações → gerar currículo personalizado → otimizar para ATS → editar → visualizar → baixar PDF/DOCX.
-
-O produto deve transmitir a sensação de uma ferramenta moderna de carreira baseada em inteligência artificial, mas com interface simples e extremamente fácil de utilizar.
-
-Use ShadCN UI em toda a interface, mantenha o design baseado em verde claro + branco, e garanta que todas as telas estejam visualmente consistentes.
-
-Antes de finalizar, revise toda a aplicação para garantir que:
-
-Não exista qualquer tela de login.
-
-Não exista cadastro.
-
-Todos os fluxos principais estejam navegáveis.
-
-Os dados sejam preservados durante a sessão.
-
-O currículo possa ser editado.
-
-O currículo possa ser visualizado antes do download.
-
-O currículo ATS possa ser baixado.
-
-A interface seja responsiva.
-
-Os componentes estejam consistentes com ShadCN.
-
-O design seja limpo, moderno e profissional.
-
-This project was built with [Lovable](https://lovable.dev).
-
-**Live app**: https://career-craft-suite-79.lovable.app
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/24b3e11f-e21e-4687-9d21-76386fe1edd1).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
 ```
+
+---
+
+# 🔐 Privacidade
+
+O projeto não utiliza autenticação.
+
+Não existe:
+
+* Login.
+* Cadastro.
+* Senha.
+* E-mail obrigatório.
+
+Os dados utilizados durante a sessão podem ser armazenados localmente no navegador por meio de `localStorage`.
+
+A aplicação deve evitar armazenar dados desnecessários.
+
+---
+
+# 📱 Responsividade
+
+A aplicação deve funcionar em:
+
+* Desktop.
+* Tablet.
+* Smartphone.
+
+No mobile, as interfaces mais complexas, como o editor de currículo, devem utilizar um fluxo vertical:
+
+```text
+Editor
+  ↓
+Preview
+```
+
+---
+
+# 📂 Estrutura sugerida
+
+```text
+src/
+├── components/
+│   ├── layout/
+│   ├── resume/
+│   ├── jobs/
+│   ├── matchmaking/
+│   ├── ats/
+│   └── ui/
+│
+├── pages/
+│   ├── Home/
+│   ├── Resume/
+│   ├── JobMatch/
+│   ├── ATSResume/
+│   └── History/
+│
+├── hooks/
+├── services/
+├── utils/
+├── types/
+└── lib/
+```
+
+---
+
+# 🧩 Princípios do projeto
+
+O desenvolvimento deve seguir alguns princípios fundamentais:
+
+### Simplicidade
+
+O usuário deve conseguir começar a utilizar o produto sem tutorial ou cadastro.
+
+### Veracidade
+
+A IA não deve inventar informações profissionais.
+
+### ATS First
+
+Os currículos gerados devem priorizar compatibilidade com sistemas ATS.
+
+### Personalização
+
+Cada currículo deve ser adaptado à vaga analisada.
+
+### Responsividade
+
+Todas as funcionalidades devem funcionar em diferentes tamanhos de tela.
+
+### Consistência
+
+Todos os componentes devem seguir o padrão visual do ShadCN UI.
+
+---
+
+# 🚧 Futuras funcionalidades
+
+Possíveis evoluções do projeto:
+
+* Cadastro opcional de usuários.
+* Armazenamento permanente de currículos.
+* Integração com LinkedIn.
+* Importação automática de vagas.
+* Integração com plataformas de emprego.
+* Histórico permanente.
+* Comparação entre diferentes versões do currículo.
+* Analytics de candidaturas.
+* Acompanhamento de processos seletivos.
+* Sugestões de vagas baseadas no perfil.
+* Personalização avançada dos templates.
+* Múltiplos idiomas.
+* Assistente de preparação para entrevistas.
+
+---
+
+# 📌 Status
+
+**Em desenvolvimento 🚧**
+
+O projeto está sendo construído utilizando **Lovable**, com foco inicial no fluxo principal de:
+
+**Currículo → Vaga → Match → Otimização ATS → Edição → Download**
+
+---
+
+# 📄 Licença
+
+Definir posteriormente conforme a estratégia de distribuição do projeto.
