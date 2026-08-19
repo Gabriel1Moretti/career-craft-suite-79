@@ -54,62 +54,87 @@ export async function downloadPdf(resume: Resume, filename: string) {
     x?: number;
     width?: number;
     charSpace?: number;
+    font?: "helvetica" | "times";
+    align?: "left" | "center";
   }
+
+  const setStyle = (
+    font: "helvetica" | "times",
+    size: number,
+    bold: boolean,
+    italic: boolean,
+    color: number,
+  ) => {
+    doc.setFont(font, bold ? (italic ? "bolditalic" : "bold") : italic ? "italic" : "normal");
+    doc.setFontSize(size);
+    doc.setTextColor(color);
+  };
 
   const text = (value: string, opts: TextOpts = {}) => {
     const {
       size = 10.5,
       bold = false,
       italic = false,
-      gap = size * 1.62,
+      gap = size * 1.6,
       color = INK,
       x = MARGIN,
       width = CONTENT,
       charSpace = 0,
+      font = "helvetica",
+      align = "left",
     } = opts;
-    doc.setFont("helvetica", bold ? (italic ? "bolditalic" : "bold") : italic ? "italic" : "normal");
-    doc.setFontSize(size);
-    doc.setTextColor(color);
+    setStyle(font, size, bold, italic, color);
     const lines = doc.splitTextToSize(value, width) as string[];
     lines.forEach((line) => {
       ensureSpace(gap);
-      doc.text(line, x, y, { charSpace });
+      setStyle(font, size, bold, italic, color);
+      if (align === "center") {
+        doc.text(line, WIDTH / 2, y, { charSpace, align: "center" });
+      } else {
+        doc.text(line, x, y, { charSpace });
+      }
       y += gap;
     });
   };
 
+  const rule = (weight = 0.6, tone = RULE) => {
+    doc.setDrawColor(tone);
+    doc.setLineWidth(weight);
+    doc.line(MARGIN, y, WIDTH - MARGIN, y);
+  };
+
   const heading = (value: string) => {
     if (!value) return;
-    y += 16;
-    ensureSpace(34);
-    text(value.toUpperCase(), { size: 9.5, bold: true, gap: 6, charSpace: 1.1, color: INK });
-    doc.setDrawColor(RULE);
-    doc.setLineWidth(0.7);
-    doc.line(MARGIN, y + 4, WIDTH - MARGIN, y + 4);
-    y += 18;
+    y += 20;
+    ensureSpace(40);
+    rule(0.6);
+    y += 15;
+    text(value.toUpperCase(), {
+      size: 10.5,
+      bold: true,
+      gap: 15,
+      charSpace: 1.6,
+      font: "times",
+      color: INK,
+    });
+    y += 3;
   };
 
   // Entry title with right-aligned period on the same baseline.
   const entryTitle = (title: string, right?: string) => {
     const size = 11;
-    const gap = 16;
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(size);
-    doc.setTextColor(INK);
+    const gap = 15.5;
+    setStyle("helvetica", size, true, false, INK);
     const rightWidth = right
-      ? (doc.getStringUnitWidth(right) * 9.5) / doc.internal.scaleFactor + 12
+      ? (doc.getStringUnitWidth(right) * 9.5) / doc.internal.scaleFactor + 14
       : 0;
     const lines = doc.splitTextToSize(title, CONTENT - rightWidth) as string[];
     lines.forEach((line, i) => {
       ensureSpace(gap);
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(size);
-      doc.setTextColor(INK);
+      setStyle("helvetica", size, true, false, INK);
       doc.text(line, MARGIN, y);
       if (i === 0 && right) {
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(9.5);
-        doc.setTextColor(GRAY);
+        setStyle("helvetica", 9.5, false, false, GRAY);
         doc.text(right, WIDTH - MARGIN, y, { align: "right" });
       }
       y += gap;
@@ -118,34 +143,47 @@ export async function downloadPdf(resume: Resume, filename: string) {
 
   const bullet = (value: string) => {
     const size = 10.5;
-    const gap = 16.5;
-    const indent = 14;
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(size);
-    doc.setTextColor(INK);
+    const gap = 15.5;
+    const indent = 15;
+    setStyle("helvetica", size, false, false, INK);
     const lines = doc.splitTextToSize(value, CONTENT - indent) as string[];
     lines.forEach((line, i) => {
       ensureSpace(gap);
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(size);
-      doc.setTextColor(INK);
-      if (i === 0) doc.text("•", MARGIN + 2, y);
+      setStyle("helvetica", size, false, false, INK);
+      if (i === 0) {
+        doc.setTextColor(GRAY);
+        doc.text("–", MARGIN + 2, y);
+        doc.setTextColor(INK);
+      }
       doc.text(line, MARGIN + indent, y);
       y += gap;
     });
   };
 
-  // ---------- Header ----------
-  text(resume.personal.name || "Currículo", { size: 21, bold: true, gap: 26, charSpace: 0.4 });
-  if (resume.personal.title)
-    text(resume.personal.title, { size: 11.5, gap: 18, color: GRAY });
-  const contact = contactLine(resume);
-  if (contact) text(contact, { size: 9.5, gap: 14, color: GRAY });
+  // ---------- Header (classic centered) ----------
   y += 6;
-  doc.setDrawColor(RULE);
-  doc.setLineWidth(1);
-  doc.line(MARGIN, y, WIDTH - MARGIN, y);
-  y += 4;
+  text(resume.personal.name || "Currículo", {
+    size: 22,
+    bold: true,
+    gap: 27,
+    charSpace: 0.8,
+    font: "times",
+    align: "center",
+  });
+  if (resume.personal.title)
+    text(resume.personal.title.toUpperCase(), {
+      size: 9.5,
+      gap: 17,
+      charSpace: 1.4,
+      color: GRAY,
+      align: "center",
+    });
+  const contact = contactLine(resume);
+  if (contact)
+    text(contact, { size: 9.5, gap: 14, color: GRAY, align: "center", width: CONTENT - 20 });
+  y += 8;
+  rule(1.1, 120);
+  y += 2;
 
   if (resume.summary) {
     heading("Resumo profissional");
