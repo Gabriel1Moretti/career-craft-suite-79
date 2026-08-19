@@ -358,8 +358,8 @@ export async function downloadDocx(resume: Resume, filename: string) {
     children.push(
       new Paragraph({
         children: [new TextRun({ text: contact, size: 19, color: GRAY })],
-        spacing: { after: 120, line: 290, lineRule: "auto" },
-        border: { bottom: { style: BorderStyle.SINGLE, size: 8, color: RULE, space: 8 } },
+        alignment: AlignmentType.CENTER,
+        spacing: { after: 40, line: 290, lineRule: "auto" },
       }),
     );
 
