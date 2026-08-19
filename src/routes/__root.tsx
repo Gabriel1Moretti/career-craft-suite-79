@@ -11,6 +11,10 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { Header } from "@/components/layout/Header";
+import { Toaster } from "@/components/ui/sonner";
+import { hydrate } from "@/lib/store";
+
 
 function NotFoundComponent() {
   return (
@@ -77,15 +81,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "MatchCV — Matchmaking de vagas e currículos ATS" },
+      {
+        name: "description",
+        content:
+          "Compare seu currículo com vagas, veja a compatibilidade e gere currículos otimizados para ATS.",
+      },
+      { name: "author", content: "MatchCV" },
+      { property: "og:title", content: "MatchCV — Matchmaking de vagas e currículos ATS" },
+      {
+        property: "og:description",
+        content: "Match inteligente entre currículo e vaga, com currículo ATS pronto para envio.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
+
     links: [
       {
         rel: "stylesheet",
@@ -102,7 +113,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="pt-BR">
       <head>
         <HeadContent />
       </head>
@@ -117,10 +128,26 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
+  useEffect(() => {
+    hydrate();
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <div className="flex min-h-screen flex-col bg-background">
+        <Header />
+        <main className="flex-1">
+          {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+          <Outlet />
+        </main>
+        <footer className="border-t border-border py-8">
+          <div className="mx-auto max-w-6xl px-4 text-center text-xs text-muted-foreground">
+            MatchCV — seus dados ficam salvos apenas no seu navegador. Sem cadastro.
+          </div>
+        </footer>
+      </div>
+      <Toaster richColors position="top-center" />
     </QueryClientProvider>
   );
 }
+
