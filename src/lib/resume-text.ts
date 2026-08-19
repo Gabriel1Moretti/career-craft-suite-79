@@ -1,6 +1,7 @@
-import type { Resume } from "@/types/resume";
+import { emptyResume, type Resume } from "@/types/resume";
 
-export function resumeToText(resume: Resume, raw?: string): string {
+export function resumeToText(input: Resume, raw?: string): string {
+  const resume = { ...emptyResume, ...input, personal: { ...emptyResume.personal, ...input.personal } };
   const p = resume.personal;
   const lines: string[] = [];
   if (p.name) lines.push(`Nome: ${p.name}`);
@@ -45,10 +46,10 @@ export function resumeToText(resume: Resume, raw?: string): string {
 
 export function hasResumeContent(resume: Resume, raw: string) {
   return Boolean(
-    raw.trim() ||
-      resume.personal.name.trim() ||
-      resume.summary.trim() ||
-      resume.experiences.length ||
-      resume.skills.length,
+    raw?.trim() ||
+      resume.personal?.name?.trim() ||
+      resume.summary?.trim() ||
+      resume.experiences?.length ||
+      resume.skills?.length,
   );
 }
