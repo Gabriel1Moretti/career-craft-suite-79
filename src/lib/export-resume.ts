@@ -130,7 +130,7 @@ export async function downloadDocx(resume: Resume, filename: string) {
   const children: InstanceType<typeof Paragraph>[] = [];
   const para = (value: string, opts: { bold?: boolean; size?: number } = {}) =>
     new Paragraph({
-      children: [new TextRun({ text: value, bold: opts.bold, size: opts.size ?? 22 })],
+      children: [new TextRun({ text: value, bold: opts.bold ?? false, size: opts.size ?? 22 })],
       spacing: { after: 80 },
     });
   const section = (value: string) =>
