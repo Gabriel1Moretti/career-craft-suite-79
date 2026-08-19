@@ -7,7 +7,7 @@ const CONTENT = WIDTH - MARGIN * 2;
 
 function contactLine(resume: Resume) {
   const p = resume.personal;
-  return [p.email, p.phone, p.location, p.linkedin, p.portfolio].filter(Boolean).join("  •  ");
+  return [p.email, p.phone, p.location, p.linkedin, p.portfolio].filter(Boolean).join("   |   ");
 }
 
 function bulletsOf(description?: string): string[] {
