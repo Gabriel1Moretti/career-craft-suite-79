@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import type { AnalysisResult } from "@/types/resume";
 
 const inputSchema = z.object({
   resumeText: z.string().min(1),
@@ -100,7 +101,7 @@ export const analyzeMatch = createServerFn({ method: "POST" })
       .replace(/^```(?:json)?/i, "")
       .replace(/```$/, "");
     try {
-      return JSON.parse(cleaned) as Record<string, unknown>;
+      return JSON.parse(cleaned) as AnalysisResult;
     } catch {
       throw new Error("A IA retornou um formato inesperado. Tente novamente.");
     }
