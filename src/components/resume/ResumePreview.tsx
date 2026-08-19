@@ -2,11 +2,11 @@ import type { Resume } from "@/types/resume";
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="mt-5">
-      <h2 className="border-b border-neutral-300 pb-1 text-[11px] font-bold uppercase tracking-wider text-neutral-700">
+    <section className="mt-7">
+      <h2 className="border-b border-neutral-300 pb-1.5 text-[11px] font-bold uppercase tracking-wider text-neutral-700">
         {title}
       </h2>
-      <div className="mt-2 space-y-3 text-[12px] leading-relaxed text-neutral-800">{children}</div>
+      <div className="mt-3 space-y-4 text-[12px] leading-7 text-neutral-800">{children}</div>
     </section>
   );
 }
