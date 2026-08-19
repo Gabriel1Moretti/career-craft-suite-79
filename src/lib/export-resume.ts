@@ -102,7 +102,7 @@ export async function downloadPdf(resume: Resume, filename: string) {
     resume.certifications.forEach((c) =>
       text(
         `${c.name}${c.issuer ? ` — ${c.issuer}` : ""}${c.year ? ` (${c.year})` : ""}`,
-        { gap: 13 },
+        { gap: 16 },
       ),
     );
   }
@@ -114,10 +114,11 @@ export async function downloadPdf(resume: Resume, filename: string) {
 
   if (resume.projects.length) {
     heading("Projetos");
-    resume.projects.forEach((p) => {
-      text(p.name, { bold: true, gap: 14 });
-      if (p.description) text(p.description, { gap: 13 });
-      if (p.link) text(p.link, { size: 9, gap: 12 });
+    resume.projects.forEach((p, i) => {
+      if (i > 0) y += 10;
+      text(p.name, { bold: true, gap: 16 });
+      if (p.description) text(p.description, { gap: 16 });
+      if (p.link) text(p.link, { size: 9.5, gap: 15 });
     });
   }
 
