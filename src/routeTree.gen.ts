@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AnalisarRouteImport } from './routes/analisar'
 import { Route as CurriculosRouteImport } from './routes/curriculos'
+import { Route as HistoricoRouteImport } from './routes/historico'
 import { Route as MeuCurriculoRouteImport } from './routes/meu-curriculo'
 
 const IndexRoute = IndexRouteImport.update({
@@ -29,6 +30,11 @@ const CurriculosRoute = CurriculosRouteImport.update({
   path: '/curriculos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HistoricoRoute = HistoricoRouteImport.update({
+  id: '/historico',
+  path: '/historico',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MeuCurriculoRoute = MeuCurriculoRouteImport.update({
   id: '/meu-curriculo',
   path: '/meu-curriculo',
@@ -39,12 +45,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/analisar': typeof AnalisarRoute
   '/curriculos': typeof CurriculosRoute
+  '/historico': typeof HistoricoRoute
   '/meu-curriculo': typeof MeuCurriculoRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/analisar': typeof AnalisarRoute
   '/curriculos': typeof CurriculosRoute
+  '/historico': typeof HistoricoRoute
   '/meu-curriculo': typeof MeuCurriculoRoute
 }
 export interface FileRoutesById {
@@ -52,20 +60,28 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/analisar': typeof AnalisarRoute
   '/curriculos': typeof CurriculosRoute
+  '/historico': typeof HistoricoRoute
   '/meu-curriculo': typeof MeuCurriculoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/analisar' | '/curriculos' | '/meu-curriculo'
+  fullPaths: '/' | '/analisar' | '/curriculos' | '/historico' | '/meu-curriculo'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/analisar' | '/curriculos' | '/meu-curriculo'
-  id: '__root__' | '/' | '/analisar' | '/curriculos' | '/meu-curriculo'
+  to: '/' | '/analisar' | '/curriculos' | '/historico' | '/meu-curriculo'
+  id:
+    | '__root__'
+    | '/'
+    | '/analisar'
+    | '/curriculos'
+    | '/historico'
+    | '/meu-curriculo'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AnalisarRoute: typeof AnalisarRoute
   CurriculosRoute: typeof CurriculosRoute
+  HistoricoRoute: typeof HistoricoRoute
   MeuCurriculoRoute: typeof MeuCurriculoRoute
 }
 
@@ -92,6 +108,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CurriculosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/historico': {
+      id: '/historico'
+      path: '/historico'
+      fullPath: '/historico'
+      preLoaderRoute: typeof HistoricoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/meu-curriculo': {
       id: '/meu-curriculo'
       path: '/meu-curriculo'
@@ -106,6 +129,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AnalisarRoute: AnalisarRoute,
   CurriculosRoute: CurriculosRoute,
+  HistoricoRoute: HistoricoRoute,
   MeuCurriculoRoute: MeuCurriculoRoute,
 }
 export const routeTree = rootRouteImport
