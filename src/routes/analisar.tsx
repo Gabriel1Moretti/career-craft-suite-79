@@ -127,6 +127,7 @@ function AnalyzePage() {
       setRecordId(id);
       toast.success("Análise concluída!");
     } catch (e) {
+      console.error("analyzeMatch failed", e);
       toast.error(e instanceof Error ? e.message : "Não foi possível concluir a análise.");
       setStep(1);
     } finally {
