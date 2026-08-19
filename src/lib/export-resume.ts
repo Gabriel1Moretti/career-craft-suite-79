@@ -297,35 +297,62 @@ export async function downloadDocx(resume: Resume, filename: string) {
 
   const section = (value: string) =>
     new Paragraph({
-      children: [new TextRun({ text: value.toUpperCase(), bold: true, size: 20, color: INK })],
-      spacing: { before: 340, after: 160, line: 276, lineRule: "auto" },
-      border: { bottom: { style: BorderStyle.SINGLE, size: 6, color: RULE, space: 6 } },
+      children: [
+        new TextRun({
+          text: value.toUpperCase(),
+          bold: true,
+          size: 21,
+          color: INK,
+          font: "Georgia",
+          characterSpacing: 26,
+        }),
+      ],
+      spacing: { before: 380, after: 140, line: 276, lineRule: "auto" },
+      border: { top: { style: BorderStyle.SINGLE, size: 6, color: RULE, space: 10 } },
     });
 
   const entry = (title: string, right?: string) =>
     new Paragraph({
       children: [
-        new TextRun({ text: title, bold: true, size: 23, color: INK }),
-        ...(right
-          ? [new TextRun({ text: `\t${right}`, size: 19, color: GRAY })]
-          : []),
+        new TextRun({ text: title, bold: true, size: 22, color: INK }),
+        ...(right ? [new TextRun({ text: `\t${right}`, size: 19, color: GRAY })] : []),
       ],
       tabStops: [{ type: TabStopType.RIGHT, position: TabStopPosition.MAX }],
-      spacing: { before: 160, after: 40, line: 290, lineRule: "auto" },
+      spacing: { before: 180, after: 40, line: 290, lineRule: "auto" },
     });
 
-  // Header
+  // Header (classic centered)
   children.push(
     new Paragraph({
       children: [
-        new TextRun({ text: resume.personal.name || "Currículo", bold: true, size: 40, color: INK }),
+        new TextRun({
+          text: resume.personal.name || "Currículo",
+          bold: true,
+          size: 44,
+          color: INK,
+          font: "Georgia",
+          characterSpacing: 12,
+        }),
       ],
-      alignment: AlignmentType.LEFT,
-      spacing: { after: 60, line: 300, lineRule: "auto" },
+      alignment: AlignmentType.CENTER,
+      spacing: { after: 80, line: 300, lineRule: "auto" },
     }),
   );
   if (resume.personal.title)
-    children.push(para(resume.personal.title, { size: 23, color: GRAY, after: 60 }));
+    children.push(
+      new Paragraph({
+        children: [
+          new TextRun({
+            text: resume.personal.title.toUpperCase(),
+            size: 19,
+            color: GRAY,
+            characterSpacing: 30,
+          }),
+        ],
+        alignment: AlignmentType.CENTER,
+        spacing: { after: 80, line: 290, lineRule: "auto" },
+      }),
+    );
   const contact = contactLine(resume);
   if (contact)
     children.push(
