@@ -2,14 +2,15 @@ import type { Resume } from "@/types/resume";
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="mt-6 border-t border-neutral-300 pt-4">
-      <h2 className="font-serif text-[11px] font-bold uppercase tracking-[0.2em] text-neutral-900">
+    <section className="mt-7">
+      <h2 className="border-b border-neutral-300 pb-1.5 text-[10px] font-bold uppercase tracking-[0.22em] text-neutral-900">
         {title}
       </h2>
-      <div className="mt-3 space-y-4 text-[12px] leading-[1.65] text-neutral-800">{children}</div>
+      <div className="mt-3.5 space-y-4 text-[12px] leading-[1.65] text-neutral-800">{children}</div>
     </section>
   );
 }
+
 
 function bulletsOf(description?: string) {
   if (!description) return [];
