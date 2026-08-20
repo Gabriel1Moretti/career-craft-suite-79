@@ -2,14 +2,15 @@ import type { Resume } from "@/types/resume";
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="mt-6 border-t border-neutral-300 pt-4">
-      <h2 className="font-serif text-[11px] font-bold uppercase tracking-[0.2em] text-neutral-900">
+    <section className="mt-7">
+      <h2 className="border-b border-neutral-300 pb-1.5 text-[10px] font-bold uppercase tracking-[0.22em] text-neutral-900">
         {title}
       </h2>
-      <div className="mt-3 space-y-4 text-[12px] leading-[1.65] text-neutral-800">{children}</div>
+      <div className="mt-3.5 space-y-4 text-[12px] leading-[1.65] text-neutral-800">{children}</div>
     </section>
   );
 }
+
 
 function bulletsOf(description?: string) {
   if (!description) return [];
@@ -25,7 +26,7 @@ function Bullets({ items }: { items: string[] }) {
     <ul className="mt-1.5 space-y-1.5">
       {items.map((b, i) => (
         <li key={i} className="flex gap-2.5">
-          <span className="text-neutral-400">–</span>
+          <span className="text-neutral-400">•</span>
           <span>{b}</span>
         </li>
       ))}
@@ -39,23 +40,25 @@ export function ResumePreview({ resume }: { resume: Resume }) {
 
   return (
     <article className="mx-auto w-full max-w-[720px] bg-white p-10 font-sans text-neutral-900 shadow-sm ring-1 ring-border">
-      <header className="border-b-2 border-neutral-800 pb-4 text-center">
-        <h1 className="font-serif text-[27px] font-bold leading-tight tracking-[0.02em]">
+      <header>
+        <h1 className="text-[26px] font-bold leading-tight tracking-[0.01em]">
           {p.name || "Seu nome"}
         </h1>
         {p.title && (
-          <p className="mt-2 text-[10.5px] uppercase tracking-[0.18em] text-neutral-600">
+          <p className="mt-1.5 text-[10px] uppercase tracking-[0.22em] text-neutral-500">
             {p.title}
           </p>
         )}
+        <div className="mt-3 border-t-2 border-neutral-900" />
         {contact.length > 0 && (
-          <p className="mt-2.5 text-[11px] leading-relaxed text-neutral-600">
-            {contact.join("   |   ")}
+          <p className="mt-3 text-[11px] leading-relaxed text-neutral-600">
+            {contact.join("  ·  ")}
           </p>
         )}
       </header>
 
-      {resume.summary && <Section title="Resumo profissional">{resume.summary}</Section>}
+      {resume.summary && <Section title="Perfil">{resume.summary}</Section>}
+
 
       {resume.experiences.length > 0 && (
         <Section title="Experiência profissional">
@@ -67,7 +70,7 @@ export function ResumePreview({ resume }: { resume: Resume }) {
               </div>
               {(e.company || e.location) && (
                 <p className="text-[11.5px] italic text-neutral-600">
-                  {[e.company, e.location].filter(Boolean).join("  •  ")}
+                  {[e.company, e.location].filter(Boolean).join("  ·  ")}
                 </p>
               )}
               <Bullets items={bulletsOf(e.description)} />
@@ -94,12 +97,12 @@ export function ResumePreview({ resume }: { resume: Resume }) {
       )}
 
       {resume.skills.length > 0 && (
-        <Section title="Habilidades">{resume.skills.join("  •  ")}</Section>
+        <Section title="Competências">{resume.skills.join("  ·  ")}</Section>
       )}
 
       {resume.languages.length > 0 && (
         <Section title="Idiomas">
-          {resume.languages.map((l) => `${l.name}${l.level ? ` — ${l.level}` : ""}`).join("  •  ")}
+          {resume.languages.map((l) => `${l.name}${l.level ? ` — ${l.level}` : ""}`).join("  ·  ")}
         </Section>
       )}
 
