@@ -70,7 +70,7 @@ export function ResumePreview({ resume }: { resume: Resume }) {
               </div>
               {(e.company || e.location) && (
                 <p className="text-[11.5px] italic text-neutral-600">
-                  {[e.company, e.location].filter(Boolean).join("  •  ")}
+                  {[e.company, e.location].filter(Boolean).join("  ·  ")}
                 </p>
               )}
               <Bullets items={bulletsOf(e.description)} />
@@ -97,12 +97,12 @@ export function ResumePreview({ resume }: { resume: Resume }) {
       )}
 
       {resume.skills.length > 0 && (
-        <Section title="Habilidades">{resume.skills.join("  •  ")}</Section>
+        <Section title="Competências">{resume.skills.join("  ·  ")}</Section>
       )}
 
       {resume.languages.length > 0 && (
         <Section title="Idiomas">
-          {resume.languages.map((l) => `${l.name}${l.level ? ` — ${l.level}` : ""}`).join("  •  ")}
+          {resume.languages.map((l) => `${l.name}${l.level ? ` — ${l.level}` : ""}`).join("  ·  ")}
         </Section>
       )}
 
