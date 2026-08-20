@@ -360,7 +360,7 @@ export async function downloadDocx(resume: Resume, filename: string) {
   }
 
   if (resume.skills.length)
-    children.push(section("Habilidades"), para(resume.skills.join("  •  ")));
+    children.push(section("Competências"), para(resume.skills.join("  ·  ")));
 
   if (resume.languages.length)
     children.push(
