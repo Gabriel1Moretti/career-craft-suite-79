@@ -33,226 +33,201 @@ export function resumeStats(resume: Resume): ResumeStats {
 export async function downloadPdf(resume: Resume, filename: string) {
   const { jsPDF } = await import("jspdf");
   const doc = new jsPDF({ unit: "pt", format: "a4" });
+
+  const INK = 30;
+  const SOFT = 110;
+  const HAIR = 205;
+
   let y = MARGIN;
 
-  const INK = 26;
-  const GRAY = 105;
-  const RULE = 190;
-
-  const ensureSpace = (needed: number) => {
+  const ensure = (needed: number) => {
     if (y + needed > HEIGHT - MARGIN) {
       doc.addPage();
       y = MARGIN;
     }
   };
 
-  interface TextOpts {
-    size?: number;
-    bold?: boolean;
-    italic?: boolean;
-    gap?: number;
-    color?: number;
-    x?: number;
-    width?: number;
-    charSpace?: number;
-    font?: "helvetica" | "times";
-    align?: "left" | "center";
-  }
-
-  const setStyle = (
-    font: "helvetica" | "times",
-    size: number,
-    bold: boolean,
-    italic: boolean,
-    color: number,
-  ) => {
-    doc.setFont(font, bold ? (italic ? "bolditalic" : "bold") : italic ? "italic" : "normal");
+  const style = (size: number, weight: "normal" | "bold" | "italic", color: number) => {
+    doc.setFont("helvetica", weight);
     doc.setFontSize(size);
     doc.setTextColor(color);
   };
 
-  const text = (value: string, opts: TextOpts = {}) => {
+  interface Opts {
+    size?: number;
+    weight?: "normal" | "bold" | "italic";
+    color?: number;
+    lead?: number;
+    x?: number;
+    width?: number;
+    charSpace?: number;
+  }
+
+  const write = (value: string, opts: Opts = {}) => {
     const {
-      size = 10.5,
-      bold = false,
-      italic = false,
-      gap = size * 1.6,
+      size = 10,
+      weight = "normal",
       color = INK,
+      lead = size * 1.55,
       x = MARGIN,
       width = CONTENT,
       charSpace = 0,
-      font = "helvetica",
-      align = "left",
     } = opts;
-    setStyle(font, size, bold, italic, color);
+    style(size, weight, color);
     const lines = doc.splitTextToSize(value, width) as string[];
     lines.forEach((line) => {
-      ensureSpace(gap);
-      setStyle(font, size, bold, italic, color);
-      if (align === "center") {
-        doc.text(line, WIDTH / 2, y, { charSpace, align: "center" });
-      } else {
-        doc.text(line, x, y, { charSpace });
-      }
-      y += gap;
+      ensure(lead);
+      style(size, weight, color);
+      doc.text(line, x, y, { charSpace });
+      y += lead;
     });
   };
 
-  const rule = (weight = 0.6, tone = RULE) => {
+  const hline = (tone: number, weight: number, from = MARGIN, to = WIDTH - MARGIN) => {
     doc.setDrawColor(tone);
     doc.setLineWidth(weight);
-    doc.line(MARGIN, y, WIDTH - MARGIN, y);
+    doc.line(from, y, to, y);
   };
 
-  const heading = (value: string) => {
-    if (!value) return;
+  const section = (label: string) => {
     y += 20;
-    ensureSpace(40);
-    rule(0.6);
+    ensure(52);
+    style(9, "bold", INK);
+    doc.text(label.toUpperCase(), MARGIN, y, { charSpace: 1.5 });
+    y += 6;
+    hline(HAIR, 0.7);
     y += 15;
-    text(value.toUpperCase(), {
-      size: 10.5,
-      bold: true,
-      gap: 15,
-      charSpace: 1.6,
-      font: "times",
-      color: INK,
-    });
-    y += 3;
   };
 
-  // Entry title with right-aligned period on the same baseline.
-  const entryTitle = (title: string, right?: string) => {
-    const size = 11;
-    const gap = 15.5;
-    setStyle("helvetica", size, true, false, INK);
-    const rightWidth = right
-      ? (doc.getStringUnitWidth(right) * 9.5) / doc.internal.scaleFactor + 14
-      : 0;
-    const lines = doc.splitTextToSize(title, CONTENT - rightWidth) as string[];
+  const entry = (title: string, right?: string) => {
+    const lead = 15;
+    style(11, "bold", INK);
+    style(9, "normal", SOFT);
+    const rightW = right ? doc.getTextWidth(right) + 16 : 0;
+    style(11, "bold", INK);
+    const lines = doc.splitTextToSize(title, CONTENT - rightW) as string[];
     lines.forEach((line, i) => {
-      ensureSpace(gap);
-      setStyle("helvetica", size, true, false, INK);
+      ensure(lead);
+      style(11, "bold", INK);
       doc.text(line, MARGIN, y);
       if (i === 0 && right) {
-        setStyle("helvetica", 9.5, false, false, GRAY);
+        style(9, "normal", SOFT);
         doc.text(right, WIDTH - MARGIN, y, { align: "right" });
       }
-      y += gap;
+      y += lead;
     });
   };
 
   const bullet = (value: string) => {
-    const size = 10.5;
-    const gap = 15.5;
-    const indent = 15;
-    setStyle("helvetica", size, false, false, INK);
+    const size = 10;
+    const lead = 14.5;
+    const indent = 13;
+    style(size, "normal", INK);
     const lines = doc.splitTextToSize(value, CONTENT - indent) as string[];
     lines.forEach((line, i) => {
-      ensureSpace(gap);
-      setStyle("helvetica", size, false, false, INK);
+      ensure(lead);
+      style(size, "normal", INK);
       if (i === 0) {
-        doc.setTextColor(GRAY);
-        doc.text("–", MARGIN + 2, y);
+        doc.setTextColor(SOFT);
+        doc.text("•", MARGIN + 1, y);
         doc.setTextColor(INK);
       }
       doc.text(line, MARGIN + indent, y);
-      y += gap;
+      y += lead;
     });
   };
 
-  // ---------- Header (classic centered) ----------
-  y += 6;
-  text(resume.personal.name || "Currículo", {
-    size: 22,
-    bold: true,
-    gap: 27,
-    charSpace: 0.8,
-    font: "times",
-    align: "center",
+  // ---------------- Header ----------------
+  y += 12;
+  write(resume.personal.name || "Currículo", {
+    size: 23,
+    weight: "bold",
+    lead: 26,
+    charSpace: 0.3,
   });
-  if (resume.personal.title)
-    text(resume.personal.title.toUpperCase(), {
+  if (resume.personal.title) {
+    y += 3;
+    write(resume.personal.title.toUpperCase(), {
       size: 9.5,
-      gap: 17,
-      charSpace: 1.4,
-      color: GRAY,
-      align: "center",
+      color: SOFT,
+      lead: 14,
+      charSpace: 1.8,
     });
+  }
+  y += 6;
+  hline(INK, 1.2);
+  y += 15;
   const contact = contactLine(resume);
-  if (contact)
-    text(contact, { size: 9.5, gap: 14, color: GRAY, align: "center", width: CONTENT - 20 });
-  y += 8;
-  rule(1.1, 120);
-  y += 2;
+  if (contact) write(contact, { size: 9.5, color: SOFT, lead: 13.5 });
 
   if (resume.summary) {
-    heading("Resumo profissional");
-    text(resume.summary, { gap: 16.5 });
+    section("Perfil");
+    write(resume.summary, { lead: 15.5 });
   }
 
   if (resume.experiences.length) {
-    heading("Experiência profissional");
+    section("Experiência profissional");
     resume.experiences.forEach((e, i) => {
-      if (i > 0) y += 12;
-      entryTitle(e.role || "", e.period);
-      const meta = [e.company, e.location].filter(Boolean).join("  •  ");
-      if (meta) text(meta, { size: 10, italic: true, gap: 16, color: GRAY });
-      y += 2;
+      if (i > 0) y += 11;
+      entry(e.role || "", e.period);
+      const meta = [e.company, e.location].filter(Boolean).join("  ·  ");
+      if (meta) write(meta, { size: 9.5, weight: "italic", color: SOFT, lead: 14 });
+      y += 3;
       bulletsOf(e.description).forEach(bullet);
     });
   }
 
   if (resume.education.length) {
-    heading("Formação acadêmica");
+    section("Formação acadêmica");
     resume.education.forEach((e, i) => {
-      if (i > 0) y += 12;
-      entryTitle(e.degree || "", e.period);
-      if (e.institution) text(e.institution, { size: 10, italic: true, gap: 16, color: GRAY });
+      if (i > 0) y += 11;
+      entry(e.degree || "", e.period);
+      if (e.institution)
+        write(e.institution, { size: 9.5, weight: "italic", color: SOFT, lead: 14 });
       if (e.description) {
-        y += 2;
-        text(e.description, { gap: 16.5 });
+        y += 3;
+        write(e.description, { lead: 15 });
       }
     });
   }
 
   if (resume.skills.length) {
-    heading("Habilidades");
-    text(resume.skills.join("  •  "), { gap: 16.5 });
+    section("Competências");
+    write(resume.skills.join("  ·  "), { lead: 15.5 });
   }
 
   if (resume.languages.length) {
-    heading("Idiomas");
-    text(
-      resume.languages.map((l) => `${l.name}${l.level ? ` — ${l.level}` : ""}`).join("  •  "),
-      { gap: 16.5 },
-    );
+    section("Idiomas");
+    write(resume.languages.map((l) => `${l.name}${l.level ? ` — ${l.level}` : ""}`).join("  ·  "), {
+      lead: 15.5,
+    });
   }
 
   if (resume.certifications.length) {
-    heading("Certificações");
+    section("Certificações");
     resume.certifications.forEach((c) =>
       bullet(`${c.name}${c.issuer ? ` — ${c.issuer}` : ""}${c.year ? ` (${c.year})` : ""}`),
     );
   }
 
   if (resume.courses.length) {
-    heading("Cursos");
+    section("Cursos");
     resume.courses.forEach((c) => bullet(c));
   }
 
   if (resume.projects.length) {
-    heading("Projetos");
+    section("Projetos");
     resume.projects.forEach((p, i) => {
-      if (i > 0) y += 12;
-      entryTitle(p.name || "");
-      if (p.description) text(p.description, { gap: 16.5 });
-      if (p.link) text(p.link, { size: 9.5, gap: 15, color: GRAY });
+      if (i > 0) y += 11;
+      entry(p.name || "");
+      if (p.description) write(p.description, { lead: 15 });
+      if (p.link) write(p.link, { size: 9, color: SOFT, lead: 13 });
     });
   }
 
   doc.save(filename);
 }
+
 
 export async function downloadDocx(resume: Resume, filename: string) {
   const {
