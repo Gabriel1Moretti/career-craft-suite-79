@@ -26,7 +26,7 @@ function Bullets({ items }: { items: string[] }) {
     <ul className="mt-1.5 space-y-1.5">
       {items.map((b, i) => (
         <li key={i} className="flex gap-2.5">
-          <span className="text-neutral-400">–</span>
+          <span className="text-neutral-400">•</span>
           <span>{b}</span>
         </li>
       ))}
@@ -40,23 +40,25 @@ export function ResumePreview({ resume }: { resume: Resume }) {
 
   return (
     <article className="mx-auto w-full max-w-[720px] bg-white p-10 font-sans text-neutral-900 shadow-sm ring-1 ring-border">
-      <header className="border-b-2 border-neutral-800 pb-4 text-center">
-        <h1 className="font-serif text-[27px] font-bold leading-tight tracking-[0.02em]">
+      <header>
+        <h1 className="text-[26px] font-bold leading-tight tracking-[0.01em]">
           {p.name || "Seu nome"}
         </h1>
         {p.title && (
-          <p className="mt-2 text-[10.5px] uppercase tracking-[0.18em] text-neutral-600">
+          <p className="mt-1.5 text-[10px] uppercase tracking-[0.22em] text-neutral-500">
             {p.title}
           </p>
         )}
+        <div className="mt-3 border-t-2 border-neutral-900" />
         {contact.length > 0 && (
-          <p className="mt-2.5 text-[11px] leading-relaxed text-neutral-600">
-            {contact.join("   |   ")}
+          <p className="mt-3 text-[11px] leading-relaxed text-neutral-600">
+            {contact.join("  ·  ")}
           </p>
         )}
       </header>
 
-      {resume.summary && <Section title="Resumo profissional">{resume.summary}</Section>}
+      {resume.summary && <Section title="Perfil">{resume.summary}</Section>}
+
 
       {resume.experiences.length > 0 && (
         <Section title="Experiência profissional">
