@@ -277,41 +277,39 @@ export async function downloadDocx(resume: Resume, filename: string) {
         new TextRun({
           text: value.toUpperCase(),
           bold: true,
-          size: 21,
+          size: 18,
           color: INK,
-          font: "Georgia",
-          characterSpacing: 26,
+          characterSpacing: 30,
         }),
       ],
-      spacing: { before: 380, after: 140, line: 276, lineRule: "auto" },
-      border: { top: { style: BorderStyle.SINGLE, size: 6, color: RULE, space: 10 } },
+      spacing: { before: 400, after: 160, line: 276, lineRule: "auto" },
+      border: { bottom: { style: BorderStyle.SINGLE, size: 6, color: RULE, space: 6 } },
     });
 
   const entry = (title: string, right?: string) =>
     new Paragraph({
       children: [
         new TextRun({ text: title, bold: true, size: 22, color: INK }),
-        ...(right ? [new TextRun({ text: `\t${right}`, size: 19, color: GRAY })] : []),
+        ...(right ? [new TextRun({ text: `\t${right}`, size: 18, color: GRAY })] : []),
       ],
       tabStops: [{ type: TabStopType.RIGHT, position: TabStopPosition.MAX }],
-      spacing: { before: 180, after: 40, line: 290, lineRule: "auto" },
+      spacing: { before: 200, after: 40, line: 290, lineRule: "auto" },
     });
 
-  // Header (classic centered)
+  // Header (left aligned, modern)
   children.push(
     new Paragraph({
       children: [
         new TextRun({
           text: resume.personal.name || "Currículo",
           bold: true,
-          size: 44,
+          size: 46,
           color: INK,
-          font: "Georgia",
-          characterSpacing: 12,
+          characterSpacing: 4,
         }),
       ],
-      alignment: AlignmentType.CENTER,
-      spacing: { after: 80, line: 300, lineRule: "auto" },
+      alignment: AlignmentType.LEFT,
+      spacing: { after: 60, line: 300, lineRule: "auto" },
     }),
   );
   if (resume.personal.title)
@@ -322,11 +320,11 @@ export async function downloadDocx(resume: Resume, filename: string) {
             text: resume.personal.title.toUpperCase(),
             size: 19,
             color: GRAY,
-            characterSpacing: 30,
+            characterSpacing: 34,
           }),
         ],
-        alignment: AlignmentType.CENTER,
-        spacing: { after: 80, line: 290, lineRule: "auto" },
+        spacing: { after: 120, line: 290, lineRule: "auto" },
+        border: { bottom: { style: BorderStyle.SINGLE, size: 12, color: INK, space: 8 } },
       }),
     );
   const contact = contactLine(resume);
@@ -334,12 +332,12 @@ export async function downloadDocx(resume: Resume, filename: string) {
     children.push(
       new Paragraph({
         children: [new TextRun({ text: contact, size: 19, color: GRAY })],
-        alignment: AlignmentType.CENTER,
-        spacing: { after: 40, line: 290, lineRule: "auto" },
+        spacing: { before: 120, after: 40, line: 290, lineRule: "auto" },
       }),
     );
 
-  if (resume.summary) children.push(section("Resumo profissional"), para(resume.summary));
+  if (resume.summary) children.push(section("Perfil"), para(resume.summary));
+
 
   if (resume.experiences.length) {
     children.push(section("Experiência profissional"));
