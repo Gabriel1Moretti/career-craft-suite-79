@@ -1,14 +1,15 @@
 import type { Resume } from "@/types/resume";
 
-const MARGIN = 56;
+const MARGIN = 54;
 const WIDTH = 595.28; // A4 pt
 const HEIGHT = 841.89;
 const CONTENT = WIDTH - MARGIN * 2;
 
 function contactLine(resume: Resume) {
   const p = resume.personal;
-  return [p.email, p.phone, p.location, p.linkedin, p.portfolio].filter(Boolean).join("   |   ");
+  return [p.email, p.phone, p.location, p.linkedin, p.portfolio].filter(Boolean).join("  ·  ");
 }
+
 
 function bulletsOf(description?: string): string[] {
   if (!description) return [];
